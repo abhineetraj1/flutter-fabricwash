@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Laundry</title>
+    <link rel="stylesheet" type="text/css" href="/static/index.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="dashboard-item">
+            <p class="dashboard-title">Total revenue</p>
+            <p class="dashboard-result">12341</p>
+        </div>
+        <div class="dashboard-item">
+            <p class="dashboard-title">Total order</p>
+            <p class="dashboard-result">12341</p>
+        </div>
+        <div class="dashboard-item">
+            <p class="dashboard-title">Total commission</p>
+            <p class="dashboard-result">12341</p>
+        </div>
+    </div>
+    <div class="dashboard-container">
+        <div class="dashboard-item">
+            <p class="dashboard-title">Pending collection</p>
+            <p class="dashboard-result">12341</p>
+        </div>
+        <div class="dashboard-item">
+            <p class="dashboard-title">Total collected</p>
+            <p class="dashboard-result">12341</p>
+        </div>
+        <div class="dashboard-item">
+            <p class="dashboard-title">Cancelled value</p>
+            <p class="dashboard-result">12341</p>
+        </div>
+    </div>
+
+    <div class="button-container">
+        <button class="filter-button" onclick="showAll()">All</button>
+        <button class="filter-button" onclick="show('pending')">pending</button>
+        <button class="filter-button" onclick="show('collected')">collected</button>
+        <button class="filter-button" onclick="show('processing')">processing</button>
+        <button class="filter-button" onclick="show('delivered')">delivered</button>
+        <button class="filter-button" onclick="show('cancelled')">cancelled</button>
+    </div>
+
+    <div class="orders-container">
+        <div class="order-row header-row">
+            <div class="order-header" style="flex: 0.75;">Date & Time</div>
+            <div class="order-header" style="flex: 1;">Customer</div>
+            <div class="order-header" style="flex: 2;">Items</div>
+            <div class="order-header" style="flex: 0.75;">Total</div>
+            <div class="order-header" style="flex: 0.75;">Status</div>
+            <div class="order-header" style="flex: 1;">Info</div>
+            <div class="order-header" style="flex: 1;">Actions</div>
+        </div>
+        {% for i in orders %}
+            <div class="order-row trx">
+                <div class="order-cell multi-row-cell" style="flex: 0.75;">{{ i.datetime }}</div>
+                <div class="order-cell multi-row-cell" style="flex: 1;">{{ i.name }}</div>
+                <div class="order-cell item-details">
+                    {% for x in i.bill %}
+                    <div class="item-row">
+                        <div class="item-name">{{ x.name }}</div>
+                        <div class="item-count">{{ x.count }}</div>
+                        <div class="item-cleaning">{{ x.cleaning_type }}</div>
+                        <div class="item-cost">₹{{ x.cost }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="order-cell multi-row-cell total">₹{{ i.total }}</div>
+                <div class="order-cell multi-row-cell status">{{ i.status }}</div>
+                <div class="order-cell multi-row-cell info-links">
+                    <a href="tel://{{ i.phone }}"><i class="material-icons">call</i></a>
+                    <a href="https://www.google.com/maps?q={{ i.location }}"><i class="material-icons">location_on</i></a>
+                </div>
+                <div class="order-cell multi-row-cell actions">
+                    <span style="display: flex; flex-direction: column;">
+                        {% if i.status == "pending" %}
+                        <form action="/" method="POST">
+                            <input name="action" type="text" class="hde" value="{{ collected }}">
+                            <input name="id" type="text" class="hde" value="{{ i['_id'] }}">
+                            <button class="action-button">Mark as collected</button>
+                        </form>
+                        {% elif i.status == "collected" %}
+                        <form action="/" method="POST">
+                            <input name="action" type="text" class="hde" value="{{ processing }}">
+                            <input name="id" type="text" class="hde" value="{{ i['_id'] }}">
+                            <button class="action-button">Mark as processing</button>
+                        </form>
+                        {% elif i.status == "processing" %}
+                        <form action="/" method="POST">
+                            <input name="action" type="text" class="hde" value="{{ devilvered }}">
+                            <input name="id" type="text" class="hde" value="{{ i['_id'] }}">
+                            <button class="action-button">Mark as delivered</button>
+                        </form>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+<script type="text/javascript" src="/static/admin.js"></script>
+<script>
+    function show(status) {
+        const rows = document.querySelectorAll('.trx');
+        rows.forEach(row => {
+            const statusCell = row.querySelector('.status');
+            if (statusCell && statusCell.textContent.trim() === status) {
+                row.style.display = 'flex';
+            } else if (statusCell) {
+                row.style.display = 'none';
+            }
+        });
+    }
+
+    function showAll() {
+        const rows = document.querySelectorAll('.trx');
+        rows.forEach(row => {
+            row.style.display = 'flex';
+        });
+    }
+</script>
+</body>
+</html>
