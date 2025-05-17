@@ -1,6 +1,10 @@
 # FabricWash - B2C Laundry Application
 
 
+https://github.com/user-attachments/assets/38a883a3-8556-4f50-9fd5-40f8898a590f
+
+
+
 FabricWash is a B2C (Business-to-Consumer) laundry application that connects customers with a seamless laundry service. It provides both a Flutter mobile app for customers and an admin panel to manage orders and financials.
 
 ## Features
